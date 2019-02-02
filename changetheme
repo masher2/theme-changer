@@ -1,0 +1,49 @@
+#! /bin/bash
+
+themedir="$HOME/.config/kitty/" 
+kittyconfdir=$themedir/kitty.conf
+vimrcdir="$HOME/.vimrc"
+wallpaperdir="$HOME/Pictures/Wallpapers/"
+
+# Changes the wallpaper to a light or dark colorscheme
+# TODO: Make it change the wallpaper randomly
+change_wallpaper() {
+    case $1 in
+        bright) feh --no-fehbg --bg-scale "$wallpaperdir/island.png" ;;
+        shine) feh --no-fehbg --bg-scale "$wallpaperdir/island 2.png" ;;
+    esac
+}
+
+# Changes the kitty colors on the active kitty terminals and modifies the config
+# to preserve the colors even if all the terminals are closed.
+change_terminal_theme() {
+    kitty @ --to unix:/tmp/kitty set-colors --all --configured $themedir/$1
+    sed -i '
+        /^#: REPLACE SECTION$/,/^#: END REPLACE SECTION$/ {
+            R '"$themedir/$1"'
+            D
+        }
+        ' $kittyconfdir
+}
+
+# Changes the nvim colorscheme on all the open sessions and modifies the config
+# to preserve the colorscheme even when starting a new session.
+# This requieres `nvr` (install it with `pip3 install neovim-remote`)
+change_nvim_theme() {
+    for server in $(nvr --serverlist); do
+        nvr --servername $server --remote-send '<Esc>:colo '"$1"'<CR>'
+    done
+    sed -i --follow-symlinks '/colorscheme/ c colorscheme '"$1" $vimrcdir
+}
+
+theme_changer () {
+    change_terminal_theme $1
+    change_wallpaper $1
+    change_nvim_theme $1
+}
+
+if kitty @ --to unix:/tmp/kitty get-colors | grep -q -E "background +#00191f"; then
+    theme_changer bright 
+else
+    theme_changer shine
+fi
