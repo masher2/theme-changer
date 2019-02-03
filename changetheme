@@ -1,29 +1,39 @@
 #! /bin/bash
 
-themedir="$HOME/.config/kitty/" 
-kittyconfdir=$themedir/kitty.conf
-vimrcdir="$HOME/.vimrc"
-wallpaperdir="$HOME/Pictures/Wallpapers/"
+themechangerconfig=$HOME/.config/theme_changer/config
+kittythemedir=$HOME/.config/kitty/ 
+kittyconf=$kittythemedir/kitty.conf
+vimrcdir=$HOME/.vimrc
+wallpaperdir=$HOME/Pictures/Wallpapers/
 
-# Changes the wallpaper to a light or dark colorscheme
-# TODO: Make it change the wallpaper randomly
+# Parse the config file to pipe into feh (not really pipe but whatever)
+parse_config() {
+    sed -n -r "
+        /$1:/,/^$/ {
+            s:^\s{4}:$wallpaperdir:p
+        }
+        " $themechangerconfig
+}
+
+# Changes the wallpaper to a light or dark colorscheme to a random wallpaper
+# according to the config file.
 change_wallpaper() {
     case $1 in
-        bright) feh --no-fehbg --bg-scale "$wallpaperdir/island.png" ;;
-        shine) feh --no-fehbg --bg-scale "$wallpaperdir/island 2.png" ;;
+        bright) feh --no-fehbg --bg-scale "$(parse_config $1 | shuf -n1)" ;;
+        shine) feh --no-fehbg --bg-scale "$(parse_config $1| shuf -n1)" ;;
     esac
 }
 
 # Changes the kitty colors on the active kitty terminals and modifies the config
 # to preserve the colors even if all the terminals are closed.
 change_terminal_theme() {
-    kitty @ --to unix:/tmp/kitty set-colors --all --configured $themedir/$1
+    kitty @ --to unix:/tmp/kitty set-colors --all --configured $kittythemedir/$1
     sed -i '
         /^#: REPLACE SECTION$/,/^#: END REPLACE SECTION$/ {
-            R '"$themedir/$1"'
+            R '"$kittythemedir/$1"'
             D
         }
-        ' $kittyconfdir
+        ' $kittyconf
 }
 
 # Changes the nvim colorscheme on all the open sessions and modifies the config
