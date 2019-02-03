@@ -8,7 +8,22 @@ The script gets the current terminal colors, checks the background color and the
 
 ## Wallpaper
 
-My wallpaper setter is feh, so it just run a command for the background to set on daytime and one for the background at nightime.
+Reads from a config file a list of wallpapers, gets one randomly according to the theme that it's setting and pipe it into `feh` to change it.
+
+My config file looks something like this:
+
+```
+bright:
+    island.png
+    buildings.png
+    desert.png
+
+shine:
+    island 2.png
+    blackhole.png
+    stars 1.png
+
+```
 
 ## Kitty
 
