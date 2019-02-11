@@ -41,7 +41,7 @@ change_terminal_theme() {
 # This requieres `nvr` (install it with `pip3 install neovim-remote`)
 change_nvim_theme() {
     for server in $(nvr --serverlist); do
-        nvr --servername $server --remote-send '<Esc>:colo '"$1"'<CR>'
+        nvr --servername $server --remote-send '<C-Space>:colo '"$1"'<CR>'
     done
     sed -i --follow-symlinks '/colorscheme/ c colorscheme '"$1" $vimrcdir
 }
