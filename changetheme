@@ -18,9 +18,10 @@ parse_config() {
 # Changes the wallpaper to a light or dark colorscheme to a random wallpaper
 # according to the config file.
 change_wallpaper() {
+    wallpaper="$(parse_config $1 | shuf -n1)"
     case $1 in
-        bright) feh --no-fehbg --bg-scale "$(parse_config $1 | shuf -n1)" ;;
-        shine) feh --no-fehbg --bg-scale "$(parse_config $1| shuf -n1)" ;;
+        bright) feh --no-fehbg --bg-scale "$wallpaper" ;;
+        shine) feh --no-fehbg --bg-scale "$wallpaper" ;;
     esac
 }
 
