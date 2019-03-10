@@ -16,13 +16,14 @@ parse_config() {
 }
 
 # Changes the wallpaper to a light or dark colorscheme to a random wallpaper
-# according to the config file.
+# according to the config file. Also updates the betterlockscreen image.
 change_wallpaper() {
     wallpaper="$(parse_config $1 | shuf -n1)"
     case $1 in
-        bright) feh --no-fehbg --bg-scale "$wallpaper" ;;
-        shine) feh --no-fehbg --bg-scale "$wallpaper" ;;
+        bright) feh --bg-scale "$wallpaper" ;;
+        shine) feh --bg-scale "$wallpaper" ;;
     esac
+    betterlockscreen -u "$wallpaper"
 }
 
 # Changes the kitty colors on the active kitty terminals and modifies the config
@@ -49,8 +50,8 @@ change_nvim_theme() {
 
 theme_changer () {
     change_terminal_theme $1
-    change_wallpaper $1
     change_nvim_theme $1
+    change_wallpaper $1
 }
 
 if kitty @ --to unix:/tmp/kitty get-colors | grep -q -E "background +#00191f"; then

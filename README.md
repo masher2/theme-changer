@@ -10,6 +10,8 @@ The script gets the current terminal colors, checks the background color and the
 
 Reads from a config file a list of wallpapers, gets one randomly according to the theme that it's setting and pipe it into `feh` to change it.
 
+After changing the wallpaper it also calls `betterlockscreen -u` with the same wallpaper to update the lockscreen too. This is done as the last step as it's the most time consuming.
+
 My config file looks something like this:
 
 ```
