@@ -1,10 +1,10 @@
 #! /bin/bash
 
-themechangerconfig=$HOME/.config/theme_changer/config
-kittythemedir=$HOME/.config/kitty/ 
+themechangerconfig=$XDG_CONFIG_HOME/theme_changer/config
+kittythemedir=$XDG_CONFIG_HOME/kitty/ 
 kittyconf=$kittythemedir/kitty.conf
-vimrcdir=$HOME/.vimrc
-wallpaperdir=$HOME/Pictures/Wallpapers/
+vimrcdir=$XDG_CONFIG_HOME/nvim/init.vim
+wallpaperdir=$XDG_PICTURES_DIR/Wallpapers/
 
 # Parse the config file to pipe into feh (not really pipe but whatever)
 parse_config() {
@@ -45,7 +45,7 @@ change_nvim_theme() {
     for server in $(nvr --serverlist); do
         nvr --servername $server --remote-send '<C-Space>:colo '"$1"'<CR>'
     done
-    sed -i --follow-symlinks '/colorscheme/ c colorscheme '"$1" $vimrcdir
+    sed -i --follow-symlinks '/^colorscheme/ c colorscheme '"$1" $vimrcdir
 }
 
 theme_changer () {
